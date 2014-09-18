@@ -1,0 +1,33 @@
+{
+  "name": "runstant-cli",
+  "version": "0.0.1",
+  "description": "runstant",
+  "main": "bin/runstant-cli.js",
+  "directories": {
+    "doc": "docs",
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "node bin/runstant-cli.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:phi-jp/runstant-cli.git"
+  },
+  "keywords": [
+    "javascript",
+    "web",
+    "tool"
+  ],
+  "author": "phi-jp",
+  "license": "MIT",
+  "readmeFilename": "README.md",
+  "devDependencies": {},
+  "bin": {
+    "runstant-cli": "bin/runstant-cli.js"
+  },
+  "dependencies": {
+    "jszip": "~2.4.0"
+  }
+}
