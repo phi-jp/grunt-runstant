@@ -1,0 +1,22 @@
+{
+    "version": "0.0.1",
+    "current": "script",
+    "setting": {
+        "title": "test",
+        "detail": "tmlib.js 用公式エディタ. 色々と使えますよ♪"
+    },
+    "code": {
+        "html": {
+            "type": "html",
+            "value": "<!DOCTYPE html>\n \n<html>\n    <head>\n        <meta charset=\"UTF-8\" />\n        <meta name=\"viewport\" content=\"width=device-width, user-scalable=no\" />\n        <meta name=\"apple-mobile-web-app-capable\" content=\"yes\" />\n \n        <title>${title}</title>\n        <meta name=\"description\" content=\"${description}\" />\n\n        <style>${style}</style>\n\n        <script src=\"http://rawgithub.com/phi-jp/tmlib.js/d8196cc5e619979146a4122608b3b323b3cebd13/build/tmlib.js\"></script>\n\t\t<script>${script}</script>\n    </head>\n    <body>\n        <canvas id=\"world\"></canvas>\n    </body>\n</html>"
+        },
+        "style": {
+            "type": "css",
+            "value": "body {\n    background-color: #eee;\n}"
+        },
+        "script": {
+            "type": "javascript",
+            "value": "/*\n * # runstant\n * さぁ, 一緒にゲームプログラミングを始めよう!!\n * ってことで tmlib.js の公式エディタツール runstant です(tmlibのステマ)\n */\n\n// main\ntm.main(function() {\n    var app = tm.display.CanvasApp(\"#world\");\n    app.resize(640, 960);\n    app.fitWindow();\n    \n    // スターを生成\n    var star = tm.display.StarShape().addChildTo(app.currentScene);\n    // 真ん中にセット    \n    star.setPosition(320, 480);\n    // クルクル回す\n    star.tweener.by({ rotation:360 }, 1000).setLoop(true);\n    \n    // ラベル\n    var label = tm.display.Label(\"touch screen!\").addChildTo(app.currentScene);\n    label.setPosition(320, 800);\n    \n    // 更新処理\n    app.currentScene.update = function(app) {\n        var pointing = app.pointing;\n        if (pointing.getPointing()) {\n            star.x += (pointing.x-star.x)*0.1;\n            star.y += (pointing.y-star.y)*0.1;\n        }\n    };\n    \n    // 実行\n    app.run();\n});\n\n"
+        }
+    }
+}

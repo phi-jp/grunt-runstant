@@ -47,13 +47,20 @@ module.exports = function(grunt) {
     grunt.registerMultiTask('runstant', 'Compile', function() {
 
         this.files.forEach(function(file) {
-            var runstantConfig = grunt.file.readJSON(file.src);
-            var data = _encode(runstantConfig);
+            var output = {};
 
-            grunt.file.write(file.dest, JSON.stringify({
-                data: data,
-                link: BASE_PATH + "#" + data,
-            }, '', '    '));
+            grunt.file.expand(file.files).forEach(function(path) {
+                var runstantConfig = grunt.file.readJSON(path);
+                var key = runstantConfig.setting.title;
+                var data = _encode(runstantConfig);
+
+                output[key] = {
+                    data: data,
+                    link: BASE_PATH + "#" + data,
+                };
+            });
+
+            grunt.file.write(file.dest, JSON.stringify(output, '', '    '));
         });
 
     });
