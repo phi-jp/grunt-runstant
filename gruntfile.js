@@ -9,6 +9,10 @@ module.exports = function(grunt) {
                 files: "examples/**/runstant.json",
                 dest: "examples/result.json",
             },
+            hoge2: {
+                files: "examples/**/runstant.json",
+                dest: "examples/result2.json",
+            },
         }
     });
 

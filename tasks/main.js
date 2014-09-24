@@ -10,6 +10,8 @@ module.exports = function(grunt) {
     var path = require("path");
     var jszip = require("jszip");
     var request = require('request');
+    var Task = require("uupaa.task.js");
+
 
     var _encode = function(data) {
         data = JSON.stringify(data);
@@ -64,10 +66,20 @@ module.exports = function(grunt) {
     grunt.registerMultiTask('runstant', 'Compile', function() {
         var done = this.async();
 
+        var rootTask = new Task(this.files.length, function() {
+            console.log("finish!");
+            done();
+        });
+
         this.files.forEach(function(file) {
             var output = {};
             var targets = grunt.file.expand(file.files);
             var count = targets.length;
+
+            var task = new Task(targets.length, function() {
+                grunt.file.write(file.dest, JSON.stringify(output, '', '    '));
+                rootTask.pass();
+            });
 
             targets.forEach(function(filepath) {
                 var runstantConfig = grunt.file.readJSON(filepath);
@@ -97,16 +109,10 @@ module.exports = function(grunt) {
 
                 shortenURL(url, function(e) {
                     d.shortUrl = e.id;
-                    if (--count <= 0) {
-                        finalFunction();
-                    }
+                    console.log(e.id);
+                    task.pass();
                 });
             });
-
-            var finalFunction = function() {
-                grunt.file.write(file.dest, JSON.stringify(output, '', '    '));
-                done();
-            };
         });
     });
 };

@@ -24,7 +24,8 @@
   "license": "MIT",
   "readmeFilename": "README.md",
   "devDependencies": {
-    "grunt": "~0.4.5"
+    "grunt": "~0.4.5",
+    "uupaa.task.js": "~0.8.45"
   },
   "bin": {
     "grunt-runstant": "bin/grunt-runstant.js"
