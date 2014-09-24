@@ -30,6 +30,8 @@
     "grunt-runstant": "bin/grunt-runstant.js"
   },
   "dependencies": {
-    "jszip": "~2.4.0"
+    "jszip": "~2.4.0",
+    "goo.gl": "~0.1.2",
+    "request": "~2.44.0"
   }
 }

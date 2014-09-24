@@ -7,7 +7,9 @@ module.exports = function(grunt) {
     var BASE_PATH = "http://phi-jp.github.io/runstant/release/alpha/";
 
     var fs = require("fs");
+    var path = require("path");
     var jszip = require("jszip");
+    var request = require('request');
 
     var _encode = function(data) {
         data = JSON.stringify(data);
@@ -44,25 +46,69 @@ module.exports = function(grunt) {
         return files.file('data').asText();
     };
 
+    var shortenURL = function(url, callback) {
+        request.post({
+            url: "https://www.googleapis.com/urlshortener/v1/url",
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            json: true,
+            body: JSON.stringify({
+                longUrl: url
+            }),
+        }, function(error, response, body) {
+            callback(body);
+        });
+    };
+
     grunt.registerMultiTask('runstant', 'Compile', function() {
+        var done = this.async();
 
         this.files.forEach(function(file) {
             var output = {};
+            var targets = grunt.file.expand(file.files);
+            var count = targets.length;
 
-            grunt.file.expand(file.files).forEach(function(path) {
-                var runstantConfig = grunt.file.readJSON(path);
-                var key = runstantConfig.setting.title;
+            targets.forEach(function(filepath) {
+                var runstantConfig = grunt.file.readJSON(filepath);
+                var dir = (function() {
+                    var arr = filepath.split('/');
+                    arr.pop();
+                    return arr.join('/');
+                })();
+
+                // ファイル展開
+                Object.keys(runstantConfig.code).forEach(function(type) {
+                    var d = this[type];
+                    if (d.path) {
+                        var filepath = path.join(dir, d.path);
+                        var v = grunt.file.read(filepath);
+                        d.value = v;
+                    }
+                }, runstantConfig.code);
+
                 var data = _encode(runstantConfig);
-
-                output[key] = {
+                var url = BASE_PATH + "#" + data;
+                var d = {
                     data: data,
-                    link: BASE_PATH + "#" + data,
+                    url: url,
                 };
+                output[dir] = d;
+
+                shortenURL(url, function(e) {
+                    d.shortUrl = e.id;
+                    if (--count <= 0) {
+                        finalFunction();
+                    }
+                });
             });
 
-            grunt.file.write(file.dest, JSON.stringify(output, '', '    '));
+            var finalFunction = function() {
+                grunt.file.write(file.dest, JSON.stringify(output, '', '    '));
+                done();
+            };
         });
-
     });
 };
+
 
